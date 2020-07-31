@@ -1,7 +1,39 @@
-const express = require('express')
-const app = express()
-const port = 3000
+const express = require('express');
+require('dotenv').config();
 
-app.get('/', (req, res) => res.send('Hello World!'))
+const app = express();
 
-app.listen(port, () => console.log(`Server listening on port ${port}`))
+const port = process.env.APP_PORT || 3001;
+
+// Parsers
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(cookieParser());
+
+// CORS
+const cors = require('cors');
+
+const corsOptions = {
+  origin: '*',
+};
+app.use(cors(corsOptions));
+
+// DB
+const mongoose = require('mongoose');
+
+mongoose.connect(process.env.APP_DB_URI, { useNewUrlParser: true });
+const db = mongoose.connection;
+// eslint-disable-next-line no-console
+db.once('open', () => console.log('Mongoose - Connected!'));
+
+// Router
+const router = require('./router');
+
+// Routes
+app.use('/api', router);
+
+// eslint-disable-next-line no-console
+app.listen(port, () => console.log(`Server listening on port ${port}`));
