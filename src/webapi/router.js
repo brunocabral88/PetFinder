@@ -4,7 +4,10 @@ const router = express.Router();
 const { body } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const loginController = require('./controllers/loginController');
-const jwtUtils = require('./jwt-utils');
+const petEventsController = require('./controllers/petEventsController');
+
+// Cases controllers
+const createAccountCase = require('./useCases/accounts/createAccountCase');
 
 // eslint-disable-next-line no-unused-vars, consistent-return
 const authenticateToken = (req, res, next) => {
@@ -37,7 +40,9 @@ router.post(
     body('email').isEmail(),
     body('password').isLength({ min: 8 }).isAlphanumeric(),
   ],
-  loginController.signUp,
+  createAccountCase,
 );
+
+router.get('/:userId/pet-events', petEventsController.listPetEvents);
 
 module.exports = router;
