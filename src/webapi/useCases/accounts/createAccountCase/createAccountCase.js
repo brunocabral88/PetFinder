@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt');
 
+const encryptPassword = (password) => bcrypt.hash(password, 10);
+
 const caseContainer = (usersRepository) => {
   const execute = async (user) => {
     if (!user || !user.email || !user.password) throw Error('Email and password are mandatory');
@@ -8,16 +10,13 @@ const caseContainer = (usersRepository) => {
     if (userExists) throw Error('User already exists in database');
 
     // Encrypt password
-    const plainTextPassword = user.password;
-    bcrypt.hash(plainTextPassword, 10, async (err, hash) => {
-      if (err) throw Error('Error hashing password');
+    const hashedPassword = await encryptPassword(user.password);
 
-      // eslint-disable-next-line no-param-reassign
-      user.password = hash;
+    // eslint-disable-next-line no-param-reassign
+    user.password = hashedPassword;
 
-      // Save user
-      await usersRepository.createUserAsync(user);
-    });
+    // Save user
+    await usersRepository.createUserAsync(user);
   };
 
   return { execute };

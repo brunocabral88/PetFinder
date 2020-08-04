@@ -3,11 +3,14 @@ const express = require('express');
 const router = express.Router();
 const { body } = require('express-validator');
 const jwt = require('jsonwebtoken');
-const loginController = require('./controllers/loginController');
+// const loginController = require('./controllers/loginController');
 const petEventsController = require('./controllers/petEventsController');
 
 // Cases controllers
 const createAccountCase = require('./useCases/accounts/createAccountCase');
+const loginCase = require('./useCases/accounts/loginCase');
+const createPetEventCase = require('./useCases/petEvents/createPetEventCase');
+const PetEvent = require('./models/PetEvent');
 
 // eslint-disable-next-line no-unused-vars, consistent-return
 const authenticateToken = (req, res, next) => {
@@ -31,7 +34,7 @@ router.post(
     body('email').isEmail(),
     body('password').isLength({ min: 8 }),
   ],
-  loginController.login,
+  loginCase,
 );
 
 router.post(
@@ -42,6 +45,15 @@ router.post(
   ],
   createAccountCase,
 );
+
+router.post('/pet-events', [
+  body('petName').isString(),
+  body('location.lat').isNumeric(),
+  body('location.long').isNumeric(),
+  authenticateToken,
+], createPetEventCase);
+
+router.get('/pet-events', async (req, res) => res.send(await PetEvent.find({}).populate('user')));
 
 router.get('/:userId/pet-events', petEventsController.listPetEvents);
 

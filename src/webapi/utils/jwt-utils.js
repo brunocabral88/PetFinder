@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
-const getJwtToken = () => jwt.sign(
-  { userId: 1, userName: 'bruno' },
+const getJwtToken = (payload) => jwt.sign(
+  payload,
   process.env.APP_JWT_SECRET,
   {
     issuer: process.env.APP_JWT_ISSUER,

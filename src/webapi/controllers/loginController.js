@@ -2,7 +2,7 @@
 const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
 const User = require('../models/User');
-const jwtUtils = require('../jwt-utils');
+const jwtUtils = require('../utils/jwt-utils');
 
 const login = (req, res) => {
   const errors = validationResult(req);
