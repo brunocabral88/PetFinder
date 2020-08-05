@@ -13,7 +13,7 @@ const controllerContainer = (createPetEventCase) => {
         petBreed: req.body.petBreed,
         location: {
           type: 'Point',
-          coordinates: [req.body.location.lat, req.body.location.long],
+          coordinates: [req.body.location.long, req.body.location.lat],
         },
       };
 

@@ -1,19 +1,18 @@
 const express = require('express');
 
 const router = express.Router();
-const { body } = require('express-validator');
+const { body, query } = require('express-validator');
 const jwt = require('jsonwebtoken');
-// const loginController = require('./controllers/loginController');
-const petEventsController = require('./controllers/petEventsController');
 
 // Cases controllers
 const createAccountCase = require('./useCases/accounts/createAccountCase');
 const loginCase = require('./useCases/accounts/loginCase');
 const createPetEventCase = require('./useCases/petEvents/createPetEventCase');
-const PetEvent = require('./models/PetEvent');
+const searchPetEventsNearbyCase = require('./useCases/petEvents/searchPetEventsNearbyCase');
+// const PetEvent = require('./models/PetEvent');
 
 // eslint-disable-next-line no-unused-vars, consistent-return
-const authenticateToken = (req, res, next) => {
+const requireTokenAuthentication = (req, res, next) => {
   const authHeader = req.headers.authorization;
   const token = req.query.token || (authHeader && authHeader.split(' ')[1]);
 
@@ -46,15 +45,18 @@ router.post(
   createAccountCase,
 );
 
+router.get('/pet-events',
+  [
+    query('lat').isNumeric(),
+    query('long').isNumeric(),
+  ],
+  searchPetEventsNearbyCase);
+
 router.post('/pet-events', [
+  requireTokenAuthentication,
   body('petName').isString(),
   body('location.lat').isNumeric(),
   body('location.long').isNumeric(),
-  authenticateToken,
 ], createPetEventCase);
-
-router.get('/pet-events', async (req, res) => res.send(await PetEvent.find({}).populate('user')));
-
-router.get('/:userId/pet-events', petEventsController.listPetEvents);
 
 module.exports = router;
