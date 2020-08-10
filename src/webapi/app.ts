@@ -17,18 +17,18 @@ app.use(cookieParser());
 const cors = require('cors');
 
 const corsOptions = {
-  origin: '*',
+  origin: 'http://localhost:3000',
   credentials: true,
 };
 app.use(cors(corsOptions));
 
 // DB
 const mongoose = require('mongoose');
-
 mongoose.connect(process.env.APP_DB_URI, { useNewUrlParser: true });
 const db = mongoose.connection;
 // eslint-disable-next-line no-console
 db.once('open', () => console.log('Mongoose - Connected!'));
+db.once('error', (err: Error) => Error(err.message));
 
 // Router
 const router = require('./router');

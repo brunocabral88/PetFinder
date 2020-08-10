@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start:dev": "nodemon",
+    "start": "npm run build && node build/app.js",
     "build": "node node_modules/rimraf/bin.js ./build && tsc",
     "test": "node ./node_modules/mocha/bin/mocha --recursive ./useCases/ --exit",
     "lint": "eslint ."

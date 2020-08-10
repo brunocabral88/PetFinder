@@ -34,7 +34,6 @@ const Map = withScriptjs(
             const lng = mapRef.getCenter().lng();
 
             const response = await PetFinderAPI.get('/api/pet-events', { params: { lat, long: lng }, withCredentials: false });
-            // console.log(response);
 
             if (response && response.data.length > 0) {
                 const markers = [];
@@ -44,14 +43,12 @@ const Map = withScriptjs(
 
                 setMarkers(markers);
             }
-            console.log(markers);
         };
 
         useEffect(() => {
             if ("geolocation" in navigator) {
                 centerMapToCurrentPosition();
             }
-            console.log(mapRef);
         }, []);
 
         return (

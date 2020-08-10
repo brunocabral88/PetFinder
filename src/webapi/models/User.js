@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
   petEvents: [
     { type: mongoose.Schema.Types.ObjectId, ref: 'PetEvent' },
   ],
-}, { timestamps: true });
+}, { collection: 'users', timestamps: true });
 
 const User = mongoose.model('User', userSchema);
 
